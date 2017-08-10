@@ -1,0 +1,111 @@
+<div class="mainContainer">
+<h2>Actuarial Model Calculation</h2>
+
+<!-- ** BEGIN: Cal Area ** -->
+<form #newCalForm="ngForm" (ngSubmit)="doCalculation(newCalForm.value)" autocomplete="off" novalidate>
+  
+<div class="row" >
+  <div class="col-5">
+    <div class="card ">
+      <div class="card-header">
+        <h1 class="card-title">
+          Inputs
+        </h1>
+      </div>
+      <div class="card-block">
+        <div class="form-group" [ngClass]="{'error': newCalForm.controls.mainLimit?.invalid && newCalForm.controls.mainLimit?.touched}">
+          <label for="mainLimit">Main Limit (£)</label>
+          <em *ngIf="newCalForm.controls.mainLimit?.invalid && (newCalForm.controls.mainLimit?.touched) && (newCalForm.controls.mainLimit?.errors.required)">Required</em>
+          <em *ngIf="newCalForm.controls.mainLimit?.invalid && (newCalForm.controls.mainLimit?.touched) && (newCalForm.controls.mainLimit?.errors.min)">should be greater than 0</em>
+          <input type="number"
+                 id="mainLimit"
+                 name="mainLimit"
+                   required
+                   [min]="1"
+                 [(ngModel)]="calEntity.mainLimit"
+                 class="form-control" />
+        </div>
+        <div class="form-group" [ngClass]="{'error': newCalForm.controls.mainRetention?.invalid && newCalForm.controls.mainRetention?.touched}">
+          <label for="mainRetention">Main Retention (£)</label>
+          <em *ngIf="newCalForm.controls.mainRetention?.invalid && (newCalForm.controls.mainRetention?.touched) && (newCalForm.controls.mainLimit?.errors.required)">Required</em>
+          <em *ngIf="newCalForm.controls.mainRetention?.invalid && (newCalForm.controls.mainRetention?.touched) && (newCalForm.controls.mainRetention?.errors.min)">should be greater than 0</em>
+          <input type="number"
+                 id="mainRetention"
+                 name="mainRetention"
+                 required
+                 [min]="1"
+                 [(ngModel)]="calEntity.mainRetention"
+                 class="form-control" />
+        </div>
+        <div class="form-group">
+          <label for="executionType">Type of Execution</label>
+          <select id="executionType"
+                  name="executionType"
+                  [(ngModel)]="calEntity.executionType"
+                  class="form-control">
+            <option *ngFor="let eType of executionTypes"
+                    value="{{eType}}">
+              {{eType}}
+            </option>
+          </select>
+        </div>
+        
+      </div>
+      <div class="card-footer">
+        <!-- <button formnovalidate="formnovalidate"
+                class="btn btn-sm btn-primary"
+                (click)="doCalculation()">
+          <i class="glyphicon glyphicon-search"></i>
+          &nbsp;Do Calculation
+        </button> -->
+        <button type="submit" [disabled]="!newCalForm.form.valid || loading" class="btn btn-primary" >Do Calculation</button>
+        <img [src]="fullImagePath" alt="loading image" width="30" height="30" [hidden]="!loading"/>
+        <!-- <button formnovalidate="formnovalidate"
+                class="btn "
+                (click)="resetCalculation()">
+          <i class="glyphicon glyphicon-share-alt"></i>
+          &nbsp;Reset
+        </button> -->
+        
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+<!-- ** END: Cal Area ** -->
+
+<div class="row" *ngIf="calResults && calResults.length" >
+  <div class="col-xs-12">
+    <div class="table-responsive">
+      <table class="table table-bordered table-condensed table-striped">
+        <thead>
+          <tr>
+            <td>Reference Date</td>
+            <td>Benchmark 1</td>
+            <td>Benchmark 2</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let result of calResults">
+            
+            <td>{{result.refDate | date}}</td>
+            <td>{{result.benchmark1 }}</td>
+            <td>{{result.benchmark2 }}</td>
+           
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+ <div class="row" *ngIf="messages && messages.length">
+  <div class="col-xs-12">
+    <div class="alert alert-warning">
+      <ul>
+        <li *ngFor="let msg of messages">{{msg}}</li>
+      </ul>
+    </div>
+  </div>
+</div> 
+</div>
